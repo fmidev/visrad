@@ -4,11 +4,20 @@
 
 import os
 
+import h5py
 import xarray as xr
 import xradar as xd
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
-    
+
+
+def read_odim_source(odimfile):
+    """read odim source data as dict"""
+    with h5py.File(odimfile, "r") as f:
+        src = f['/what'].attrs['source'].decode()
+    src = src.split(',')
+    return dict([s.split(':') for s in src])
+
 
 def read_sweep(filename, group="sweep_0", engine="odim"):
     """open_dataset xradar wrapper"""
@@ -52,3 +61,4 @@ if __name__ == "__main__":
     filename0 = os.path.expanduser("~/data/polar/fiuta/202208051330_radar.polar.fiuta.h5")
     dbz = read_sweep(filename0, group="sweep_0")['DBZH']
     ax = plot_dbz(dbz)
+    read_odim_source(filename0)
