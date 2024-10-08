@@ -5,7 +5,9 @@
 import os
 
 import xarray as xr
+import xradar as xd
 import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
     
 
 def read_sweep(filename, group="sweep_0", engine="odim"):
@@ -15,11 +17,17 @@ def read_sweep(filename, group="sweep_0", engine="odim"):
 
 def plot_ppi(da, ax=None, **kws):
     """plot PPI"""
+    proj_crs = xd.georeference.get_crs(da)
+    cart_crs = ccrs.Projection(proj_crs)
+    tgt_crs = ccrs.AzimuthalEquidistant(
+        central_latitude=float(da.latitude),
+        central_longitude=float(da.longitude),
+    )
     if ax is None:
-        fig, ax = plt.subplots()
-    else:
-        fig = ax.get_figure()
-    da.plot(ax=ax, x="x", y="y", **kws)
+        ax = plt.axes(projection=tgt_crs)
+    fig = ax.get_figure()
+    da.plot(ax=ax, x="x", y="y", transform=cart_crs, **kws)
+    ax.coastlines()
     fig.tight_layout()
     return ax
 
