@@ -30,8 +30,11 @@ dependencies = [
   "cartopy",
 ]
 
-#[project.urls]
-#Source = "https://github.com/Jussi Tiira/visrad"
+[project.scripts]
+visrad = "visrad.cli:visrad"
+
+[project.urls]
+Source = "https://github.com/fmidev/visrad/"
 
 [tool.hatch.version]
 source = "vcs"
@@ -48,7 +51,6 @@ source_pkgs = ["visrad", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/visrad/__about__.py",
 ]
 
 [tool.coverage.paths]
